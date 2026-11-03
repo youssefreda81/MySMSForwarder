@@ -1,0 +1,2 @@
+rootProject.name = "MySMSForwarder"
+include ':app'
