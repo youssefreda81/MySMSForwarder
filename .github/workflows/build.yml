@@ -11,12 +11,19 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-    - name: Set up Android SDK
-      uses: subosito/android-action@v2
-      with:
-        target-sdk: 34
-        build-tools: 34.0.0
-        components: platform-tools,platforms;android-34
+    - name: Setup Android SDK manually
+      run: |
+        export ANDROID_SDK_ROOT=$HOME/android-sdk
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+        unzip -q cmdline-tools.zip -d $HOME/temp-tools
+        mv $HOME/temp-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+        rm cmdline-tools.zip
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+        $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+        echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+        echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
     - name: Install Gradle
       run: sudo apt-get update && sudo apt-get install -y gradle
     - name: Build Debug APK
