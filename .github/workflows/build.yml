@@ -11,8 +11,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+    - name: Set up Android SDK
+      uses: subosito/android-action@v2
+      with:
+        target-sdk: 34
+        build-tools: 34.0.0
+        components: platform-tools,platforms;android-34
     - name: Install Gradle
       run: sudo apt-get update && sudo apt-get install -y gradle
     - name: Build Debug APK
